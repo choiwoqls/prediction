@@ -1,5 +1,8 @@
 package com.prediction.prediction.dto.user;
 
+import com.prediction.prediction.domain.user.User;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +16,10 @@ public class UserDTO {
 
     private Long id;
     private int team_id;
+
+    @NotBlank(message = "이메일은 필수 입력 정보 입니다.")
     private String email;
+
     private String nickname;
     private String password;
     private int role;
@@ -21,4 +27,17 @@ public class UserDTO {
     private Date date;
     private int message_op;
     private int result_op;
+
+    public UserDTO(User user){
+        this.id=user.getId();
+        this.team_id=user.getTeam_id();
+        this.email=user.getEmail();
+        this.nickname=user.getNickname();
+        this.password=user.getPassword();
+        this.role=user.getRole();
+        this.credit=user.getCredit();
+        this.date=user.getDate();
+        this.message_op=user.getMessage_op();
+        this.result_op=user.getResult_op();
+    }
 }
