@@ -1,12 +1,12 @@
 package com.prediction.prediction.domain.player;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.prediction.prediction.domain.game.Game;
+import com.prediction.prediction.domain.user.User;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -29,4 +29,15 @@ public class Team {
     @Column(name = "lose_count")
     private int lose_count;
 
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Player> players;
+
+    @OneToMany(mappedBy = "home")
+    private List<Game> home;
+
+    @OneToMany(mappedBy = "away")
+    private List<Game> away;
+
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<User> users;
 }

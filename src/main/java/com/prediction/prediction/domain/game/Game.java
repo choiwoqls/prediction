@@ -1,14 +1,12 @@
 package com.prediction.prediction.domain.game;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.prediction.prediction.domain.player.Team;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,15 +17,20 @@ public class Game {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "home_id")
-    private int home_id;
-
-    @Column(name = "away_id")
-    private int away_id;
-
     private int status;
     private Date date;
     private int result;
+
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Game_Play> plays;
+
+    @ManyToOne
+    @JoinColumn(name = "home_id")
+    private Team home;
+
+    @ManyToOne
+    @JoinColumn(name = "away_id")
+    private Team away;
 
 
 

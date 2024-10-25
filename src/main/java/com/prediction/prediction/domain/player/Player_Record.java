@@ -1,10 +1,6 @@
 package com.prediction.prediction.domain.player;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,9 +13,6 @@ public class Player_Record {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
-    @Column(name = "player_id")
-    private Long player_id;
 
     @Column(name = "player_role")
     private int player_role;
@@ -39,4 +32,8 @@ public class Player_Record {
     private float ops_save;
 
     private float war;
+
+    @OneToOne
+    @JoinColumn(name = "player_id")
+    private Player player;
 }

@@ -1,10 +1,6 @@
 package com.prediction.prediction.domain.user;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,10 +13,10 @@ public class Message {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "user_id")
-    private Long user_id;
-
     private int type;
     private String body;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

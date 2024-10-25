@@ -1,5 +1,6 @@
 package com.prediction.prediction.dto.user;
 
+import com.prediction.prediction.domain.player.Team;
 import com.prediction.prediction.domain.user.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -15,7 +16,7 @@ import java.util.Date;
 public class UserDTO {
 
     private Long id;
-    private int team_id;
+    private Team team;
 
     @NotBlank(message = "이메일은 필수 입력 정보 입니다.")
     private String email;
@@ -30,7 +31,7 @@ public class UserDTO {
 
     public UserDTO(User user){
         this.id=user.getId();
-        this.team_id=user.getTeam_id();
+        this.team=user.getTeam();
         this.email=user.getEmail();
         this.nickname=user.getNickname();
         this.password=user.getPassword();

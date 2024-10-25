@@ -1,10 +1,7 @@
 package com.prediction.prediction.domain.community;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.prediction.prediction.domain.user.User;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,13 +17,15 @@ public class Community_Comment {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "community_id")
-    private Long community_id;
-
-    @Column(name = "user_id")
-    private Long user_id;
-
     private String body;
     private Date date;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "community_id")
+    private Community community;
 
 }

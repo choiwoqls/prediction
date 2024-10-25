@@ -1,10 +1,7 @@
 package com.prediction.prediction.domain.game;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.prediction.prediction.domain.user.User;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 @Entity
@@ -17,13 +14,15 @@ public class Game_Play {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "game_id")
-    private int game_id;
-
-    @Column(name = "user_id")
-    private int user_id;
-
     private int expect;
     private int result;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "game_id")
+    private Game game;
 
 }

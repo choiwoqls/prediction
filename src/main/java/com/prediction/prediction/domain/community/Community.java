@@ -1,14 +1,12 @@
 package com.prediction.prediction.domain.community;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.prediction.prediction.domain.user.User;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -20,10 +18,6 @@ public class Community {
     @Column(name = "id", nullable = false)
     private Long id;
 
-
-    @Column(name = "user_id")
-    private Long user_id;
-
     @Column(name = "lineup_check")
     private int lineup_check;
 
@@ -31,5 +25,16 @@ public class Community {
     private String title;
     private String body;
     private Date date;
+
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Community_Comment> comments;
+
+    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Community_Like> likes;
 
 }
