@@ -15,8 +15,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    //이메일 체크 있으면 true, 없으면 false
-    public UserDTO emailCheck(String email){
+    public UserDTO emailCheck(String email) {
         System.out.println("checkecke");
         User user = (User) userRepository.findByEmail(email).orElseThrow(InvalidateUserException::new);
         UserDTO dto = new UserDTO(user);
