@@ -1,21 +1,23 @@
 package com.prediction.prediction.domain.user;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.prediction.prediction.domain.community.Community;
 import com.prediction.prediction.domain.community.Community_Comment;
 import com.prediction.prediction.domain.community.Community_Like;
 import com.prediction.prediction.domain.game.Game_Play;
 import com.prediction.prediction.domain.player.Team;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
 
-@Getter
+@Data
+@Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
 @Entity
+@Table(name = "user")
 public class User {
 
     @Id
@@ -25,6 +27,8 @@ public class User {
 
     private String email;
     private String nickname;
+
+    @JsonIgnore
     private String password;
     private int role;
     private int credit;
