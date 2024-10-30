@@ -1,25 +1,15 @@
 package com.prediction.prediction.service.user;
 
-import com.prediction.prediction.common.exception.InvalidateUserException;
 import com.prediction.prediction.domain.user.User;
-import com.prediction.prediction.dto.user.UserDTO;
-import com.prediction.prediction.repository.user.UserRepository;
-import com.prediction.prediction.response.SingleResponse;
-import jakarta.validation.ValidationException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.prediction.prediction.dto.request.user.UserDTO;
 
-@Service
-@RequiredArgsConstructor
-public class UserService {
+import java.util.List;
 
-    private final UserRepository userRepository;
 
-    public UserDTO emailCheck(String email) {
-        System.out.println("checkecke");
-        User user = (User) userRepository.findByEmail(email).orElseThrow(InvalidateUserException::new);
-        UserDTO dto = new UserDTO(user);
-        return dto;
-    }
+public interface UserService {
+
+    User signUp(UserDTO userDto);
+
+    List<Object[]> info();
 
 }
