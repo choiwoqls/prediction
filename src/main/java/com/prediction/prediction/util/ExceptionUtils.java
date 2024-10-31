@@ -1,4 +1,4 @@
-package com.prediction.util;
+package com.prediction.prediction.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

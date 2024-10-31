@@ -1,4 +1,4 @@
-package com.prediction.util;
+package com.prediction.prediction.util;
 
 import java.time.LocalDateTime;
 
