@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.prediction.util.ApiResponse;
-import com.prediction.util.ExceptionUtils;
+import com.prediction.prediction.util.ApiResponse;
+import com.prediction.prediction.util.ExceptionUtils;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 @ControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
