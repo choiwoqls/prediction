@@ -2,7 +2,10 @@ package com.prediction.prediction.service.serviceImpl.user;
 
 import java.util.*;
 
-import com.prediction.util.HashUtil;
+import com.prediction.prediction.domain.user.Role;
+import com.prediction.prediction.enumerations.UserRole;
+import com.prediction.prediction.service.user.RoleService;
+import com.prediction.prediction.util.HashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,27 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Override
+    public User getUserByEmail(String email) {
+        try {
+           return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("The Resource was not found"));
+       }catch (Exception e){
+           throw new CustomException(e);
+       }
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        try {
+           return userRepository.findById(id).orElseThrow(() -> new NotFoundException("The Resource was not found"));
+       }catch (Exception e){
+           throw new CustomException(e);
+       }
+    }
 
     @Override
     public User signUp(UserDTO userDto) {
@@ -46,7 +70,11 @@ public class UserServiceImpl implements UserService {
             user.setNickname(userDto.getNickname());
             user.setPassword(HashUtil.hashPassword(userDto.getPassword()));
             //role 설정 ..
-            user.setRole(1);
+            Role role = roleService.findByName(UserRole.USER);
+            HashSet<Role> roles = new HashSet<>();
+            roles.add(role);
+            System.out.println("role :" + role.getName());
+            user.setRoles(roles);
             user.setCredit(5);
             user.setDate(new Date());
             user.setMessage_op(0);
@@ -67,6 +95,8 @@ public class UserServiceImpl implements UserService {
         }
 
     }
+
+
 
     @Override
     public List<Object[]> info() {

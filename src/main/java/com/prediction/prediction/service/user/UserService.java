@@ -10,6 +10,10 @@ public interface UserService {
 
     User signUp(UserDTO userDto);
 
+    User getUserByEmail(String email);
+
+    User getUserById(Long id);
+
     List<Object[]> info();
 
 }
