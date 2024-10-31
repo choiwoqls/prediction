@@ -11,7 +11,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -30,7 +32,7 @@ public class User {
 
     @JsonIgnore
     private String password;
-    private int role;
+
     private int credit;
     private Date date;
 
@@ -39,6 +41,13 @@ public class User {
 
     @Column(name = "result_op")
     private int result_op;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Community> communities;

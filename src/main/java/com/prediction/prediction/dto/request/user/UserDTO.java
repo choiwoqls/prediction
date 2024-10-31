@@ -23,7 +23,7 @@ public class UserDTO {
 
     private String nickname;
     private String password;
-    private int role;
+
     private int credit;
     private Date date;
     private int message_op;
@@ -35,7 +35,6 @@ public class UserDTO {
         this.email = user.getEmail();
         this.nickname = user.getNickname();
         this.password = user.getPassword();
-        this.role = user.getRole();
         this.credit = user.getCredit();
         this.date = user.getDate();
         this.message_op = user.getMessage_op();
