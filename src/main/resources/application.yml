@@ -19,4 +19,6 @@ spring:
 #            host: localhost
 #            port: 6379
     jwt:
-        secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+        secret: j3H5Ld5nYmGWyULy6xwpOgfSH++NgKXnJMq20vpfd+8=t
+        expiresIn: 86400000
+
