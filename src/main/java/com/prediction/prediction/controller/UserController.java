@@ -35,6 +35,7 @@ public class UserController {
          return ApiResponse.success(jwtAuthenticationResponse).toResponseEntity();
      }
 
+
     @PostMapping("/sign-up")
     public ResponseEntity<ApiResponse<User>> signUp(@RequestBody @Valid UserDTO userDto) {
         System.out.println("team_id : " + userDto.getTeam());

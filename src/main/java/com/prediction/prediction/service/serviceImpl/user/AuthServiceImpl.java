@@ -10,6 +10,7 @@ import com.prediction.prediction.service.user.AuthService;
 import com.prediction.prediction.service.user.UserService;
 import com.prediction.prediction.util.HashUtil;
 import com.prediction.prediction.util.JWTAuthenticationResponse;
+import com.prediction.prediction.util.RedisUtil;
 import com.prediction.prediction.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private final UserService userService;
+
+    @Autowired
+    private final RedisUtil redisUtil;
 
     @Autowired
     private AuthenticationProvider authenticationProvider;
@@ -61,6 +65,7 @@ public class AuthServiceImpl implements AuthService {
             jwt = jwtTokenProvider.generateToken(authentication);
             userPrincipal = UserUtils.getLoggedInUser();
             user = userService.getUserById(userPrincipal.getId());
+            redisUtil.saveToken(String.valueOf(user.getId()), jwt, 60);
             return new JWTAuthenticationResponse(jwt, user);
         }catch (Exception e){
             throw new CustomException(e);
