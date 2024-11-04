@@ -1,5 +1,6 @@
 package com.prediction.prediction.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.context.MessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -43,10 +44,36 @@ public class GlobalExceptionHandler {
         return new ApiResponse<>(errorMessage, (Object) "", HttpStatus.BAD_REQUEST).toResponseEntity();
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException ex, Locale locale) {
+        String errorMessage = messageSource.getMessage(ex.getMessage(), ex.getArgs(), locale);
+        return new ApiResponse<>(errorMessage, (Object) "", HttpStatus.NOT_FOUND).toResponseEntity();
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> methodArgumentNotValid(MethodArgumentNotValidException ex, Locale locale){
         String errorMessage = ex.getMessage();
         return new ApiResponse<>(errorMessage, (Object) "", HttpStatus.BAD_REQUEST).toResponseEntity();
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> globalExceptionHandler(Exception ex, Locale locale) throws JsonProcessingException {
+        String message = ex.getMessage();
+        Object error = ex.getMessage();
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        if (ex.getClass().getSimpleName().equals("InternalAuthenticationServiceException"))
+            status = HttpStatus.UNAUTHORIZED;
+
+        if (ex.getClass().getSimpleName().equals("HttpMessageNotReadableException")) {
+            status = HttpStatus.BAD_REQUEST;
+            message = "Malformed JSON request format";
+        }
+
+        String errorMessage = messageSource.getMessage("exceptions.validation.server", null, locale);
+        return new ApiResponse<>(errorMessage, error, HttpStatus.INTERNAL_SERVER_ERROR).toResponseEntity();
     }
 }

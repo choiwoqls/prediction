@@ -10,6 +10,7 @@ import com.prediction.prediction.enumerations.ResponseType;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {
         super(message);

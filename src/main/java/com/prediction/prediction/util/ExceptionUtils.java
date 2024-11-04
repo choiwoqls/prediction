@@ -14,6 +14,7 @@ public class ExceptionUtils {
     public static <T> ResponseEntity<ApiResponse<Object>> handleControllerExceptions(Exception e) {
 
         if (e instanceof NotFoundException) {
+            System.out.println("here?????");
             return ApiResponse.error(
                     e.getMessage(),
                     e,
