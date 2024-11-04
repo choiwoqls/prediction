@@ -1,10 +1,19 @@
 package com.prediction.prediction.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.prediction.prediction.exception.CustomException;
+import com.prediction.prediction.exception.NotFoundException;
+import com.prediction.prediction.exception.UnauthorizedException;
+import com.prediction.prediction.util.ApiResponse;
+import com.prediction.prediction.util.RedisUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.UUID;
 
+
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -22,6 +32,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    @Autowired
+    private RedisUtil redisUtil;
+
+
+    //인증이 필요한 작업이 오면 JWT 토큰 검증
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //보통 cors 요청 검사를 하기 위해 OPTIONS로 요청 할 수 있다.
@@ -34,13 +49,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                     //JWT 토큰이 있고 유효하면 ContextHolder에 객체 저장. (성공)
                     String userID = tokenProvider.getUserIdFromToken(jwt);
-                    UserDetails userDetails = customUserDetailsService.loadByUserId(Long.valueOf(userID));
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    //redis 토큰 일치 확인. 일치하지 않으면 예외 던짐.
+                    redisUtil.matchedToken(userID, jwt);
+                        UserDetails userDetails = customUserDetailsService.loadByUserId(Long.valueOf(userID));
+                        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
                 }
+            }catch (UnauthorizedException e){
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json"); // 응답 타입 설정
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper
+                        .writeValueAsString(ApiResponse.error(e.getMessage(),e,HttpStatus.UNAUTHORIZED)
+                        .toResponseEntity());
+                response.getWriter().write(json);
+                return;
             } catch (Exception e) {
                 logger.error("Could not set user authentication in security context", e);
             }
