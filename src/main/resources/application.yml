@@ -14,10 +14,10 @@ spring:
         properties:
             hibernate:
                 format_sql: true
-#    data:
-#        redis:
-#            host: localhost
-#            port: 6379
+    data:
+        redis:
+            host: localhost
+            port: 6379
     jwt:
         secret: j3H5Ld5nYmGWyULy6xwpOgfSH++NgKXnJMq20vpfd+8=t
         expiresIn: 86400000
