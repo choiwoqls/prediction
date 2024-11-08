@@ -40,7 +40,7 @@ public class RedisUtil {
         try {
             String token = (String) redisTemplate.opsForValue().get(key);
             if (token == null) {
-                throw new RuntimeException("해당 키에 대한 토큰이 존재하지 않습니다");
+                throw new UnauthorizedException("Unauthorized Key");
             }
             return token;
         }catch (RedisConnectionFailureException e) {

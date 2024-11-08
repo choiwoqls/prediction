@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         //보통 cors 요청 검사를 하기 위해 OPTIONS로 요청 할 수 있다.
         if (request.getMethod().equals("OPTIONS")) {
             response.setStatus(HttpServletResponse.SC_OK);
-        }else{
+        }else {
             //JWT 토큰 인증
             try {
                 String jwt = JwtUtil.getJwtFromRequest(request);
@@ -52,39 +52,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     String userEmail = jwtTokenProvider.getUserEmailFromToken(jwt);
                     //redis 토큰 일치 확인. 일치하지 않으면 예외 던짐.
                     redisUtil.matchedToken(userEmail, jwt);
-                        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
-                        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities());
-                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
                 }
-            }catch (UnauthorizedException e){
+            } catch (UnauthorizedException | CustomException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json"); // 응답 타입 설정
 
                 ObjectMapper objectMapper = new ObjectMapper();
                 String json = objectMapper
-                        .writeValueAsString(ApiResponse.error(e.getMessage(),e,HttpStatus.UNAUTHORIZED)
-                        .toResponseEntity());
+                        .writeValueAsString(ApiResponse.error(e.getMessage(), e, HttpStatus.UNAUTHORIZED)
+                                .toResponseEntity());
                 response.getWriter().write(json);
                 return;
-            } catch (Exception e) {
+            }catch (Exception e) {
                 logger.error("Could not set user authentication in security context", e);
 
             }
             filterChain.doFilter(request, response);
         }
     }
-//
-//    private String getJwtFromRequest(HttpServletRequest request) {
-//        String bearerToken = request.getHeader("Authorization");
-//        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-//            return bearerToken.substring(7);
-//        }
-//        return null;
-//    }
 
 
 }
