@@ -19,9 +19,9 @@ public class HelloController {
 
     private final UserService userService;
 
-    @PostMapping("/hello")
-    public ResponseEntity<ApiResponse<List<Object[]>>> hello() {
-        List<Object[]> list = userService.info();
+    @GetMapping("/hello")
+    public ResponseEntity<ApiResponse<List<Object>>> hello() {
+        List<Object> list = userService.info();
         System.out.println(list);
         return ApiResponse.success(list).toResponseEntity();
     }
