@@ -2,11 +2,14 @@ package com.prediction.prediction.controller;
 
 import com.prediction.prediction.domain.user.User;
 import com.prediction.prediction.dto.request.user.UserDTO;
+import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.service.user.AuthService;
 import com.prediction.prediction.service.user.UserService;
 import com.prediction.prediction.util.ApiResponse;
 
 import com.prediction.prediction.util.JWTAuthenticationResponse;
+import com.prediction.prediction.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -35,12 +38,19 @@ public class UserController {
          return ApiResponse.success(jwtAuthenticationResponse).toResponseEntity();
      }
 
+     @PostMapping("/logout")
+     public ResponseEntity<ApiResponse<MessageDto>> logout(HttpServletRequest request){
+         String token = JwtUtil.getJwtFromRequest(request);
+         MessageDto message = authService.logout(token);
+         return ApiResponse.success(message).toResponseEntity();
+     }
+
 
     @PostMapping("/sign-up")
-    public ResponseEntity<ApiResponse<User>> signUp(@RequestBody @Valid UserDTO userDto) {
+    public ResponseEntity<ApiResponse<MessageDto>> signUp(@RequestBody @Valid UserDTO userDto) {
         System.out.println("team_id : " + userDto.getTeam());
-        User user = userService.signUp(userDto);
-        return ApiResponse.success(user).toResponseEntity();
+        MessageDto message = userService.signUp(userDto);
+        return ApiResponse.success(message).toResponseEntity();
 
     }
 

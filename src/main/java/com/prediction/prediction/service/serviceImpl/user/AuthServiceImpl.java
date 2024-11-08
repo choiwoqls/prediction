@@ -2,7 +2,9 @@ package com.prediction.prediction.service.serviceImpl.user;
 
 import com.prediction.prediction.domain.user.User;
 import com.prediction.prediction.dto.request.user.UserDTO;
+import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.exception.CustomException;
+import com.prediction.prediction.exception.IncorrectPasswordException;
 import com.prediction.prediction.exception.ResourceNotFoundException;
 import com.prediction.prediction.security.JwtTokenProvider;
 import com.prediction.prediction.security.UserPrincipal;
@@ -47,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
 
             if(!HashUtil.isTheSame(password, user1.getPassword())){
                 System.out.println("adfgadgagsags");
-                throw new ResourceNotFoundException();
+                throw new IncorrectPasswordException("Incorrect password");
             }
             String jwt = null;
             UserPrincipal userPrincipal = null;
@@ -65,10 +67,20 @@ public class AuthServiceImpl implements AuthService {
             jwt = jwtTokenProvider.generateToken(authentication);
             userPrincipal = UserUtils.getLoggedInUser();
             user = userService.getUserById(userPrincipal.getId());
-            redisUtil.saveToken(String.valueOf(user.getId()), jwt, 60);
-            return new JWTAuthenticationResponse(jwt, user);
+            redisUtil.saveToken(String.valueOf(user.getEmail()), jwt, 60);
+            return new JWTAuthenticationResponse(jwt);
         }catch (Exception e){
             throw new CustomException(e);
         }
+    }
+
+    @Override
+    public MessageDto logout(String token) {
+        String userEmail = jwtTokenProvider.getUserEmailFromToken(token);
+        redisUtil.deleteToken(userEmail);
+        SecurityContextHolder.clearContext();
+        MessageDto message = new MessageDto();
+        message.setMessage("Logout Success");
+        return message;
     }
 }

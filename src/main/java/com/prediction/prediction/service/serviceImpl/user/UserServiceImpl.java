@@ -3,6 +3,7 @@ package com.prediction.prediction.service.serviceImpl.user;
 import java.util.*;
 
 import com.prediction.prediction.domain.user.Role;
+import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.enumerations.UserRole;
 import com.prediction.prediction.service.user.RoleService;
 import com.prediction.prediction.util.HashUtil;
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User signUp(UserDTO userDto) {
+    public MessageDto signUp(UserDTO userDto) {
 
         try {
             System.out.println("one");
@@ -81,7 +82,9 @@ public class UserServiceImpl implements UserService {
             user.setResult_op(0);
             user.setTeam(userDto.getTeam());
             userRepository.save(user);
-            return user;
+            MessageDto messageDto = new MessageDto();
+            messageDto.setMessage("회원가입 성공");
+            return messageDto;
 
         } catch (BadRequestAlertException e) {
             System.out.println("11");
@@ -99,7 +102,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<Object[]> info() {
+    public List<Object> info() {
         return userRepository.findAllUserAndTeam();
     }
 

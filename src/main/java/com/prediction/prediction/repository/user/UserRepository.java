@@ -19,6 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByNickname(String nickname);
 
     @Query("SELECT u FROM User u JOIN u.team t")
-    List<Object[]> findAllUserAndTeam();
+    List<Object> findAllUserAndTeam();
 
 }
