@@ -1,5 +1,6 @@
 package com.prediction.prediction.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.prediction.prediction.domain.community.Community;
 import com.prediction.prediction.domain.community.Community_Comment;
@@ -33,11 +34,13 @@ public class User {
     @JsonIgnore
     private String password;
 
-    private int credit;
-    private Date date;
 
     @Column(name = "message_op")
     private int message_op;
+    private int credit;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private Date date;
 
     @Column(name = "result_op")
     private int result_op;
