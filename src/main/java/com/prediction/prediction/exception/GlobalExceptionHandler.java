@@ -59,6 +59,13 @@ public class GlobalExceptionHandler {
         return new ApiResponse<>(errorMessage, (Object) "", HttpStatus.BAD_REQUEST).toResponseEntity();
     }
 
+    @ExceptionHandler(IncorrectPasswordException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<?> incorrectPasswordException(IncorrectPasswordException ex){
+        String errorMessage = ex.getMessage();
+        return new ApiResponse<>(errorMessage, "", HttpStatus.UNAUTHORIZED).toResponseEntity();
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> globalExceptionHandler(Exception ex, Locale locale) throws JsonProcessingException {
         String message = ex.getMessage();

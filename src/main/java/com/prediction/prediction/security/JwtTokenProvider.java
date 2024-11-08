@@ -48,8 +48,8 @@ public class JwtTokenProvider{
 
           try {
               String jwt =  Jwts.builder()
-                      .id(userPrincipal.getId() + "")
-                      .subject(userPrincipal.getId() + "")
+                      .id(userPrincipal.getEmail() + "")
+                      .subject(userPrincipal.getEmail() + "")
                       .claim("user", userPrincipal)
                       .claim("roles", roles)
                       .issuedAt(new Date(System.currentTimeMillis()))
@@ -65,7 +65,7 @@ public class JwtTokenProvider{
     }
 
 
-    public String getUserIdFromToken(String token) {
+    public String getUserEmailFromToken(String token) {
          Claims claims = Jwts.parser()
                  .verifyWith(JwtUtil.getKeyFromSecret(jwtSecret))
                  .build()

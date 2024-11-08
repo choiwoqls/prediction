@@ -1,5 +1,6 @@
 package com.prediction.prediction.util;
 
+import com.prediction.prediction.exception.CustomException;
 import com.prediction.prediction.exception.NotFoundException;
 import com.prediction.prediction.exception.ResourceNotFoundException;
 import com.prediction.prediction.exception.UnauthorizedException;
@@ -42,12 +43,14 @@ public class RedisUtil {
                 throw new RuntimeException("해당 키에 대한 토큰이 존재하지 않습니다");
             }
             return token;
-        } catch (RedisConnectionFailureException e) {
+        }catch (RedisConnectionFailureException e) {
             System.err.println("Redis 서버에 연결할 수 없습니다: " + e.getMessage());
             throw new NotFoundException(e.getMessage());
-        } catch (DataAccessException e) {
+        }catch (DataAccessException e) {
             System.err.println("Redis 데이터 액세스 예외 발생: " + e.getMessage());
             throw new NotFoundException(e.getMessage());
+        }catch (Exception e){
+            throw new CustomException(e);
         }
     }
 

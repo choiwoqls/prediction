@@ -5,6 +5,7 @@ import com.prediction.prediction.exception.CustomException;
 import com.prediction.prediction.exception.NotFoundException;
 import com.prediction.prediction.exception.UnauthorizedException;
 import com.prediction.prediction.util.ApiResponse;
+import com.prediction.prediction.util.JwtUtil;
 import com.prediction.prediction.util.RedisUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,7 +28,7 @@ import java.util.UUID;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtTokenProvider tokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
@@ -45,13 +46,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }else{
             //JWT 토큰 인증
             try {
-                String jwt = getJwtFromRequest(request);
-                if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+                String jwt = JwtUtil.getJwtFromRequest(request);
+                if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
                     //JWT 토큰이 있고 유효하면 ContextHolder에 객체 저장. (성공)
-                    String userID = tokenProvider.getUserIdFromToken(jwt);
+                    String userEmail = jwtTokenProvider.getUserEmailFromToken(jwt);
                     //redis 토큰 일치 확인. 일치하지 않으면 예외 던짐.
-                    redisUtil.matchedToken(userID, jwt);
-                        UserDetails userDetails = customUserDetailsService.loadByUserId(Long.valueOf(userID));
+                    redisUtil.matchedToken(userEmail, jwt);
+                        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                                 userDetails,
                                 null,
@@ -71,18 +72,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             } catch (Exception e) {
                 logger.error("Could not set user authentication in security context", e);
+
             }
             filterChain.doFilter(request, response);
         }
     }
-
-    private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
+//
+//    private String getJwtFromRequest(HttpServletRequest request) {
+//        String bearerToken = request.getHeader("Authorization");
+//        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+//            return bearerToken.substring(7);
+//        }
+//        return null;
+//    }
 
 
 }
