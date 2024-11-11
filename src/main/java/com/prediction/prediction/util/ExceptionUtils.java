@@ -17,7 +17,6 @@ public class ExceptionUtils {
             System.out.println("here?????");
             return ApiResponse.error(
                     e.getMessage(),
-                    e,
                     HttpStatus.NOT_FOUND).toResponseEntity();
             // } else if(e instanceof InvalidUUIDException){
             // return ApiResponse.error(
@@ -40,20 +39,17 @@ public class ExceptionUtils {
         } else if (e instanceof BadCredentialsException) {
             return ApiResponse.error(
                     e.getMessage(),
-                    e,
                     HttpStatus.BAD_REQUEST).toResponseEntity();
         } else if (e instanceof BadRequestAlertException) {
             System.out.println("BadRequestAlertException-Exception_Util");
             return ApiResponse.error(
                     e.getMessage(),
-                    e,
                     HttpStatus.BAD_REQUEST).toResponseEntity();
         } else {
             // Handle other exceptions as needed
             System.out.println("INTERNAL_SERVER_ERROR-Exception_Util");
             return ApiResponse.error(
                     e.getMessage(),
-                    e,
                     HttpStatus.INTERNAL_SERVER_ERROR).toResponseEntity();
         }
     }

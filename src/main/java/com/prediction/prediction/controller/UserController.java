@@ -1,6 +1,7 @@
 package com.prediction.prediction.controller;
 
 import com.prediction.prediction.domain.user.User;
+import com.prediction.prediction.dto.request.user.LoginDTO;
 import com.prediction.prediction.dto.request.user.UserDTO;
 import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.service.user.AuthService;
@@ -32,9 +33,9 @@ public class UserController {
     private final AuthService authService;
 
      @PostMapping("/login")
-     public ResponseEntity<ApiResponse<JWTAuthenticationResponse>> login(@RequestBody @Valid UserDTO userDto){
+     public ResponseEntity<ApiResponse<JWTAuthenticationResponse>> login(@RequestBody @Valid LoginDTO loginDto){
          System.out.println("login");
-         JWTAuthenticationResponse jwtAuthenticationResponse = authService.login(userDto);
+         JWTAuthenticationResponse jwtAuthenticationResponse = authService.login(loginDto);
          return ApiResponse.success(jwtAuthenticationResponse).toResponseEntity();
      }
 
@@ -48,10 +49,8 @@ public class UserController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<ApiResponse<MessageDto>> signUp(@RequestBody @Valid UserDTO userDto) {
-        System.out.println("team_id : " + userDto.getTeam());
         MessageDto message = userService.signUp(userDto);
         return ApiResponse.success(message).toResponseEntity();
-
     }
 
 }

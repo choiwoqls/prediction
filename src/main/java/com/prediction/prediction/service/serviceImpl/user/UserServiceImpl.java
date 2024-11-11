@@ -33,19 +33,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByEmail(String email) {
         try {
-           return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("The Resource was not found"));
+           return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("찾을 수 없는 이메일"));
+       }catch (NotFoundException e){
+           throw new NotFoundException(e.getMessage());
        }catch (Exception e){
-           throw new CustomException(e);
-       }
+            throw new CustomException(e);
+        }
     }
 
     @Override
     public User getUserById(Long id) {
         try {
-           return userRepository.findById(id).orElseThrow(() -> new NotFoundException("The Resource was not found"));
+           return userRepository.findById(id).orElseThrow(() -> new NotFoundException("찾을 수 없는 유저 ID"));
+       }catch (NotFoundException e){
+           throw new NotFoundException(e.getMessage());
        }catch (Exception e){
-           throw new CustomException(e);
-       }
+            throw new CustomException(e);
+        }
     }
 
     @Override

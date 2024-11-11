@@ -1,10 +1,12 @@
 package com.prediction.prediction.service.serviceImpl.user;
 
 import com.prediction.prediction.domain.user.User;
+import com.prediction.prediction.dto.request.user.LoginDTO;
 import com.prediction.prediction.dto.request.user.UserDTO;
 import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.exception.CustomException;
 import com.prediction.prediction.exception.IncorrectPasswordException;
+import com.prediction.prediction.exception.NotFoundException;
 import com.prediction.prediction.exception.ResourceNotFoundException;
 import com.prediction.prediction.security.JwtTokenProvider;
 import com.prediction.prediction.security.UserPrincipal;
@@ -39,25 +41,24 @@ public class AuthServiceImpl implements AuthService {
     private JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public JWTAuthenticationResponse login(UserDTO userDto) {
+    public JWTAuthenticationResponse login(LoginDTO loginDTO) {
         try {
 
-            String email = userDto.getEmail();
-            String password = userDto.getPassword();
+            String email = loginDTO.getEmail();
+            String password = loginDTO.getPassword();
 
             User user1 = userService.getUserByEmail(email);
 
             if(!HashUtil.isTheSame(password, user1.getPassword())){
-                System.out.println("adfgadgagsags");
-                throw new IncorrectPasswordException("Incorrect password");
+                throw new IncorrectPasswordException("일치하지 않는 비밀번호");
             }
             String jwt = null;
             UserPrincipal userPrincipal = null;
             User user = null;
 
-            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword());
+            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
             System.out.println(authRequest);
-            System.out.println(userDto.getEmail() + " : " + userDto.getPassword());
+            System.out.println(loginDTO.getEmail() + " : " + loginDTO.getPassword());
 
             Authentication authentication = authenticationProvider.authenticate(authRequest);
 
@@ -69,7 +70,12 @@ public class AuthServiceImpl implements AuthService {
             user = userService.getUserById(userPrincipal.getId());
             redisUtil.saveToken(String.valueOf(user.getEmail()), jwt, 60);
             return new JWTAuthenticationResponse(jwt);
+        }catch (NotFoundException e){
+            throw new NotFoundException(e.getMessage());
+        }catch (IncorrectPasswordException e){
+            throw new IncorrectPasswordException(e.getMessage());
         }catch (Exception e){
+            System.out.println("error : " + e.getClass().toString());
             throw new CustomException(e);
         }
     }
