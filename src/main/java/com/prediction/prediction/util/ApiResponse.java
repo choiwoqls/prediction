@@ -36,9 +36,8 @@ public class ApiResponse<T> {
     }
 
     // Constructor for error response
-    public ApiResponse(String message, Object error, HttpStatus status) {
+    public ApiResponse(String message, HttpStatus status) {
         this.message = message;
-        this.error = error;
         this.status = status;
         this.success = false;
     }
@@ -49,8 +48,8 @@ public class ApiResponse<T> {
     }
 
     // Static method to create an error response
-    public static <T> ApiResponse<T> error(String message, Object error, HttpStatus status) {
-        return new ApiResponse<>(message, error, status);
+    public static <T> ApiResponse<T> error(String message, HttpStatus status) {
+        return new ApiResponse<>(message, status);
     }
 
     // Convert to ResponseEntity

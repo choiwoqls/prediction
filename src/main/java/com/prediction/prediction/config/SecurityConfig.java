@@ -59,7 +59,7 @@ public class SecurityConfig {
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     ServletOutputStream out = response.getOutputStream();
                     new ObjectMapper().writeValue(out, new ApiResponse<String>("Invalid or missing auth token." +
-                            "",  (Object) "", HttpStatus.UNAUTHORIZED));
+                            "", HttpStatus.UNAUTHORIZED));
                     out.flush();
                 };
             }
@@ -71,7 +71,7 @@ public class SecurityConfig {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     ServletOutputStream out = response.getOutputStream();
-                    new ObjectMapper().writeValue(out, new ApiResponse<String>("You are not allowed to access this resource.", (Object) "", HttpStatus.FORBIDDEN));
+                    new ObjectMapper().writeValue(out, new ApiResponse<String>("You are not allowed to access this resource.", HttpStatus.FORBIDDEN));
                     out.flush();
                 };
             }
