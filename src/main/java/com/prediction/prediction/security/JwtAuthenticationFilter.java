@@ -66,7 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 ObjectMapper objectMapper = new ObjectMapper();
                 String json = objectMapper
-                        .writeValueAsString(ApiResponse.error(e.getMessage(),e,HttpStatus.UNAUTHORIZED)
+                        .writeValueAsString(ApiResponse.error(e.getMessage(),HttpStatus.UNAUTHORIZED)
                         .toResponseEntity());
                 response.getWriter().write(json);
                 return;

@@ -1,6 +1,7 @@
 package com.prediction.prediction.security;
 
 import com.prediction.prediction.exception.CustomException;
+import com.prediction.prediction.exception.MissingTokenException;
 import com.prediction.prediction.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -66,11 +67,15 @@ public class JwtTokenProvider{
 
 
     public String getUserEmailFromToken(String token) {
-         Claims claims = Jwts.parser()
-                 .verifyWith(JwtUtil.getKeyFromSecret(jwtSecret))
-                 .build()
-                 .parseSignedClaims(token).getPayload();
-        return claims.getSubject();
+        try {
+            Claims claims = Jwts.parser()
+                     .verifyWith(JwtUtil.getKeyFromSecret(jwtSecret))
+                     .build()
+                     .parseSignedClaims(token).getPayload();
+            return claims.getSubject();
+        }catch (Exception e){
+            throw new MissingTokenException("Token not found in header");
+        }
     }
 
     public boolean validateToken(String authToken) {
