@@ -21,4 +21,14 @@ spring:
     jwt:
         secret: j3H5Ld5nYmGWyULy6xwpOgfSH++NgKXnJMq20vpfd+8=t
         expiresIn: 86400000
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: jaebindev945@gmail.com
+        password: puxb vnxa zoxs rgdk
+        properties:
+            mail.smtp.debug: true
+            mail.smtp.connectiontimeout: 1000 #1초
+            mail.starttls.enable: true
+            mail.smtp.auth: true
 
