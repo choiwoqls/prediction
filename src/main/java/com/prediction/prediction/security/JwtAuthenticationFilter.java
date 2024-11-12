@@ -7,8 +7,12 @@ import com.prediction.prediction.exception.UnauthorizedException;
 import com.prediction.prediction.util.ApiResponse;
 import com.prediction.prediction.util.JwtUtil;
 import com.prediction.prediction.util.RedisUtil;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.UnavailableException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -59,6 +63,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 userDetails.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
+                }else{
+                    throw new UnauthorizedException("Invalid Token");
                 }
             }catch (UnauthorizedException e){
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -72,7 +78,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             } catch (Exception e) {
                 logger.error("Could not set user authentication in security context", e);
-
             }
             filterChain.doFilter(request, response);
         }
