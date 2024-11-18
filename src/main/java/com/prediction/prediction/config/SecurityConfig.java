@@ -48,7 +48,9 @@ public class SecurityConfig {
             private final CustomUserDetailsService userService;
 
             private static final String[] AUTH_WHITELIST = {
-                    "/user/**"
+                    "/auth/**",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**"
             };
 
             //Spring Security에서 인증 오류가 발생할 때 사용자에게 JSON 형식의 에러 응답을 반환

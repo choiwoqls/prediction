@@ -8,6 +8,7 @@ import com.prediction.prediction.exception.CustomException;
 import com.prediction.prediction.exception.IncorrectPasswordException;
 import com.prediction.prediction.exception.NotFoundException;
 import com.prediction.prediction.exception.ResourceNotFoundException;
+import com.prediction.prediction.exception.UnauthorizedException;
 import com.prediction.prediction.security.JwtTokenProvider;
 import com.prediction.prediction.security.UserPrincipal;
 import com.prediction.prediction.service.user.AuthService;
@@ -82,11 +83,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public MessageDto logout(String token) {
-        String userEmail = jwtTokenProvider.getUserEmailFromToken(token);
-        redisUtil.deleteToken(userEmail);
-        SecurityContextHolder.clearContext();
-        MessageDto message = new MessageDto();
-        message.setMessage("Logout Success");
-        return message;
+        try {
+            String userEmail = jwtTokenProvider.getUserEmailFromToken(token);
+            System.out.println("userEmail : "+userEmail);
+            redisUtil.deleteToken(userEmail);
+
+            MessageDto message = new MessageDto();
+            SecurityContextHolder.clearContext();
+            message.setMessage("Logout Success");
+            return message;
+        }catch (UnauthorizedException e){
+            throw new UnauthorizedException(e.getMessage());
+        }
     }
 }

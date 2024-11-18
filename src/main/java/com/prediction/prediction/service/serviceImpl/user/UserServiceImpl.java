@@ -2,9 +2,11 @@ package com.prediction.prediction.service.serviceImpl.user;
 
 import java.util.*;
 
+import com.prediction.prediction.domain.player.Team;
 import com.prediction.prediction.domain.user.Role;
 import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.enumerations.UserRole;
+import com.prediction.prediction.service.player.TeamService;
 import com.prediction.prediction.service.user.RoleService;
 import com.prediction.prediction.util.HashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private TeamService teamService;
 
     @Override
     public User getUserByEmail(String email) {
@@ -84,7 +89,8 @@ public class UserServiceImpl implements UserService {
             user.setDate(new Date());
             user.setMessage_op(0);
             user.setResult_op(0);
-            user.setTeam(userDto.getTeam());
+            Team team = teamService.getTeamById(userDto.getTeam_id());
+            user.setTeam(team);
             userRepository.save(user);
             MessageDto messageDto = new MessageDto();
             messageDto.setMessage("회원가입 성공");

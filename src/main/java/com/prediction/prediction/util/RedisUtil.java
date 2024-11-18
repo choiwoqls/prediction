@@ -39,6 +39,7 @@ public class RedisUtil {
     public String getToken(String key) {
         try {
             String token = (String) redisTemplate.opsForValue().get(key);
+            System.out.println("token : " + token);
             if (token == null) {
                 throw new UnauthorizedException("Unauthorized Key");
             }
@@ -49,19 +50,26 @@ public class RedisUtil {
         }catch (DataAccessException e) {
             System.err.println("Redis 데이터 액세스 예외 발생: " + e.getMessage());
             throw new NotFoundException(e.getMessage());
-        }catch (Exception e){
+        }catch (UnauthorizedException e){
+            throw new UnauthorizedException(e.getMessage());
+        } catch (Exception e){
             throw new CustomException(e);
         }
     }
 
     public void deleteToken(String key) {
         try {
+            if ((String) redisTemplate.opsForValue().get(key) == null) {
+                throw new NotFoundException("The user is already logged out or the token is invalid.");
+            }
             redisTemplate.delete(key);
         } catch (RedisConnectionFailureException e) {
             System.err.println("Redis 서버에 연결할 수 없습니다: " + e.getMessage());
             throw new NotFoundException(e.getMessage());
         } catch (DataAccessException e) {
             System.err.println("Redis 데이터 액세스 예외 발생: " + e.getMessage());
+            throw new NotFoundException(e.getMessage());
+        } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
         }
     }

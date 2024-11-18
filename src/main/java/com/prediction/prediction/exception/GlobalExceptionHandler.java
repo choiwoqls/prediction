@@ -61,8 +61,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> methodArgumentNotValid(MethodArgumentNotValidException ex, Locale locale){
-
-
             String firstErrorMessage =  ex.getBindingResult().getFieldErrors()
             .stream()
             .sorted((e1, e2) -> e1.getField().compareTo(e2.getField())) // 필드 이름 기준으로 정렬
@@ -71,10 +69,6 @@ public class GlobalExceptionHandler {
             .orElse("Unknown error"); // 에러가 없을 때의 기본 메시지
 
           return new ApiResponse<>(firstErrorMessage, HttpStatus.BAD_REQUEST).toResponseEntity();
-
-
-
-
     }
 
     //로그인 시 비밀번호 틀렸을 때 발생
@@ -98,6 +92,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> notFoundException(NotFoundException ex){
         String errorMessage = ex.getMessage();
         return new ApiResponse<>(errorMessage, HttpStatus.NOT_FOUND).toResponseEntity();
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<?> unauthorizedException(UnauthorizedException ex){
+        String errorMessage = ex.getMessage();
+        return new ApiResponse<>(errorMessage, HttpStatus.UNAUTHORIZED).toResponseEntity();
     }
 
     @ExceptionHandler(Exception.class)

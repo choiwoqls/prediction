@@ -26,10 +26,17 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final String[] AUTH_WHITELIST = {
+            "/auth/",
+            "/swagger-ui/",
+            "/v3/api-docs"
+    };
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -48,48 +55,44 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (request.getMethod().equals("OPTIONS")) {
             response.setStatus(HttpServletResponse.SC_OK);
         }else{
-            //JWT 토큰 인증
-            try {
-                String jwt = JwtUtil.getJwtFromRequest(request);
-                if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
-                    //JWT 토큰이 있고 유효하면 ContextHolder에 객체 저장. (성공)
-                    String userEmail = jwtTokenProvider.getUserEmailFromToken(jwt);
-                    //redis 토큰 일치 확인. 일치하지 않으면 예외 던짐.
-                    redisUtil.matchedToken(userEmail, jwt);
+            String path = request.getRequestURI();
+            boolean whitelist = Arrays.stream(AUTH_WHITELIST).anyMatch(path::contains);
+
+            //whitelist 체크
+            if (!whitelist) {
+                //JWT 토큰 인증
+                try {
+                    //Authorization 헤더가 없거나, 비어있으면 error 발생.
+                    String jwt = JwtUtil.getJwtFromRequest(request);
+                    //JWT 토큰이 유효한지 체크
+                    if (jwtTokenProvider.validateToken(jwt)) {
+                        //ContextHolder에 객체 저장. (성공)
+                        String userEmail = jwtTokenProvider.getUserEmailFromToken(jwt);
+                        //redis 토큰 일치 확인. 일치하지 않으면 예외 던짐.
+                        redisUtil.matchedToken(userEmail, jwt);
                         UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                                 userDetails,
                                 null,
                                 userDetails.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    }
+                }catch (UnauthorizedException e){
+                    System.out.println("this");
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json"); // 응답 타입 설정
 
-                }else{
-                    throw new UnauthorizedException("Invalid Token");
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String json = objectMapper
+                            .writeValueAsString(ApiResponse.error(e.getMessage(),HttpStatus.UNAUTHORIZED)
+                                    .toResponseEntity());
+                    response.getWriter().write(json);
+                    return;
+                } catch (Exception e) {
+                    logger.error("Could not set user authentication in security context", e);
                 }
-            }catch (UnauthorizedException e){
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json"); // 응답 타입 설정
-
-                ObjectMapper objectMapper = new ObjectMapper();
-                String json = objectMapper
-                        .writeValueAsString(ApiResponse.error(e.getMessage(),HttpStatus.UNAUTHORIZED)
-                        .toResponseEntity());
-                response.getWriter().write(json);
-                return;
-            } catch (Exception e) {
-                logger.error("Could not set user authentication in security context", e);
             }
             filterChain.doFilter(request, response);
         }
     }
-//
-//    private String getJwtFromRequest(HttpServletRequest request) {
-//        String bearerToken = request.getHeader("Authorization");
-//        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-//            return bearerToken.substring(7);
-//        }
-//        return null;
-//    }
-
-
 }
