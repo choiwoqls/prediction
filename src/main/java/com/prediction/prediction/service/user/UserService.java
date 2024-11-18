@@ -13,6 +13,8 @@ public interface UserService {
 
     User getUserByEmail(String email);
 
+    boolean checkEmail(String email);
+
     User getUserById(Long id);
 
     List<Object> info();

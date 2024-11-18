@@ -58,6 +58,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean checkEmail(String email){
+        try{
+            return userRepository.findByEmail(email).isEmpty();
+        }catch (Exception e){
+            throw new CustomException(e);
+        }
+    }
+
+    @Override
     public MessageDto signUp(UserDTO userDto) {
 
         try {

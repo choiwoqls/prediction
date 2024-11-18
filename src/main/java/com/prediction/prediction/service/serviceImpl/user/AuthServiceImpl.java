@@ -1,13 +1,12 @@
 package com.prediction.prediction.service.serviceImpl.user;
 
 import com.prediction.prediction.domain.user.User;
-import com.prediction.prediction.dto.request.user.LoginDTO;
-import com.prediction.prediction.dto.request.user.UserDTO;
+import com.prediction.prediction.dto.request.auth.CodeDTO;
+import com.prediction.prediction.dto.request.auth.LoginDTO;
 import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.exception.CustomException;
 import com.prediction.prediction.exception.IncorrectPasswordException;
 import com.prediction.prediction.exception.NotFoundException;
-import com.prediction.prediction.exception.ResourceNotFoundException;
 import com.prediction.prediction.exception.UnauthorizedException;
 import com.prediction.prediction.security.JwtTokenProvider;
 import com.prediction.prediction.security.UserPrincipal;
@@ -86,6 +85,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             String userEmail = jwtTokenProvider.getUserEmailFromToken(token);
             System.out.println("userEmail : "+userEmail);
+
             redisUtil.deleteToken(userEmail);
 
             MessageDto message = new MessageDto();
@@ -94,6 +94,21 @@ public class AuthServiceImpl implements AuthService {
             return message;
         }catch (UnauthorizedException e){
             throw new UnauthorizedException(e.getMessage());
+        }
+    }
+
+    @Override
+    public MessageDto checkCode(CodeDTO codeDto) {
+        try {
+            MessageDto message = new MessageDto();
+            redisUtil.matchedToken(codeDto.getEmail(), codeDto.getCode());
+            redisUtil.deleteToken(codeDto.getEmail());
+            message.setMessage("이메일 인증 성공.");
+            return message;
+        }catch (UnauthorizedException e){
+            throw new UnauthorizedException("일치하지 않는 코드.");
+        }catch (Exception e){
+            throw new CustomException(e);
         }
     }
 }

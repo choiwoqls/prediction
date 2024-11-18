@@ -39,7 +39,6 @@ public class RedisUtil {
     public String getToken(String key) {
         try {
             String token = (String) redisTemplate.opsForValue().get(key);
-            System.out.println("token : " + token);
             if (token == null) {
                 throw new UnauthorizedException("Unauthorized Key");
             }
@@ -74,8 +73,8 @@ public class RedisUtil {
         }
     }
 
-    public void matchedToken(String key, String token) throws ResourceNotFoundException {
-        if(!this.getToken(key).equals(token)){
+    public void matchedToken(String key, String value) {
+        if(!this.getToken(key).equals(value)){
             throw new UnauthorizedException("Redis Not Matched");
         }
     }
