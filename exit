@@ -1,0 +1,58 @@
+[33m68bbd6a[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m gitignore
+[33ma8d4cc8[m gitignore
+[33m4de87f1[m gitignore
+[33m92387aa[m gitignore 설정
+[33mbf0439d[m Merge remote-tracking branch 'origin/master'
+[33me95629f[m fix : 로그인 요청 받을 때 UserDTO -> LoginDTO 로 변경
+[33mc936a3d[m fix : Error 객체 수정 (error Object 삭제)
+[33m86f58fe[m feat : Sign-up Validation 추가
+[33m1bacf42[m fix: login, filter 예외 처리
+[33m749bdc6[m fix: Date 포맷 변경
+[33m715cac5[m feat : 메세지 response 추가, 비밀번호 불일치 예외 추가.
+[33m263fa77[m fix : 로그인 시 jwt 토큰에 email 저장, Redis 키 email 로 변경
+[33ma5d71b8[m remove : 파일 삭제
+[33me7b1692[m feat : logout 구현
+[33maa8bfce[m build : redis, jwt 설정 수정
+[33m81eb5a1[m remove : 안쓰는 코드 삭제
+[33mf710700[m remove : 로그인 구현
+[33m5c193b1[m remove : 삭제
+[33m1cc7fca[m fix : 예외처리 사소한 변경
+[33ma9a92c1[m feat : redis 로그인, 로그인 확인 구현
+[33m98bab77[m feat : redis info
+[33mf301d4f[m feat : login test
+[33ma5f8e2d[m chore : user role
+[33m2556171[m feat : user role
+[33m0d1e575[m feat : add exception
+[33m9d46661[m feat : sign in, login
+[33mf05950c[m feat : JWT Token
+[33m7f3758d[m chore : move dir
+[33m90c1693[m feat : add Spring security
+[33me8e1321[m delete
+[33m43bfa94[m feat : add jwt token
+[33m5adbf45[m feat : test-code
+[33m81573d7[m feat : sign-up business logic
+[33m740d3d2[m feat : redis
+[33m3a6a572[m feat : JWT config
+[33m1e3d547[m feat : response object
+[33md4b71c3[m feat : password hash class
+[33m2c86e19[m feat : DTO 추가
+[33mf87a634[m feat : 예외 처리, 오류 처리
+[33me9fdf5b[m feat : 리프레쉬 관련 코드
+[33m528d1a7[m feat : 회원가입 로직 추가
+[33m99a77c6[m fix: file delete
+[33m506a0b0[m feat: 패키지 추가 (zalando)
+[33mdb63785[m fix: DTO 수정
+[33mfed9d1c[m fix: User, Team model 수정
+[33m710802d[m feat: security 추가
+[33m78d2594[m feat: spotless 설정
+[33m5b858c1[m Merge remote-tracking branch 'origin/master'
+[33m8b16328[m fix: Model 수정(테이블 연결)
+[33mc434485[m fix: DB 연결 수정
+[33m38d60b8[m fix: DB 설정
+[33mc7356ed[m feat: Spring Security Config 파일 추가
+[33m5c715a0[m feat: repository 추가
+[33m75817e7[m feat: Exception 관리 (Validation)
+[33mc6cd229[m feat: user email DB 조회
+[33m88be687[m feat: 응답 객체 생성
+[33mca8490f[m feat: added starter-validation, jwt dependencies
+[33m2d5300b[m 프로젝트 초기 설정 (first commit)
