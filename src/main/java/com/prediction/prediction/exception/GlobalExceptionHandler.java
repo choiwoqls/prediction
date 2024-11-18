@@ -11,12 +11,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.prediction.prediction.util.ApiResponse;
 import com.prediction.prediction.util.ExceptionUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -57,7 +59,7 @@ public class GlobalExceptionHandler {
         return new ApiResponse<>(errorMessage, HttpStatus.NOT_FOUND).toResponseEntity();
     }
 
-    //Valid 실패할 때 발생
+    //Valid 실패할 때 발생 (requestBody)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> methodArgumentNotValid(MethodArgumentNotValidException ex, Locale locale){
@@ -70,6 +72,15 @@ public class GlobalExceptionHandler {
 
           return new ApiResponse<>(firstErrorMessage, HttpStatus.BAD_REQUEST).toResponseEntity();
     }
+
+//    //Valid 실패할 때 발생 (requestParam)
+//    @ExceptionHandler(HandlerMethodValidationException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ResponseEntity<?> HandlerMethodValidationException(HandlerMethodValidationException ex, Locale locale){
+//
+//        System.out.println(Arrays.toString(ex.getDetailMessageArguments().));
+//        return new ApiResponse<>(Arrays.toString(ex.getDetailMessageArguments()), HttpStatus.BAD_REQUEST).toResponseEntity();
+//    }
 
     //로그인 시 비밀번호 틀렸을 때 발생
     @ExceptionHandler(IncorrectPasswordException.class)
