@@ -18,6 +18,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByNickname(String nickname);
 
+    boolean existsByEmail(String email);
+
     @Query("SELECT u FROM User u JOIN u.team t")
     List<Object> findAllUserAndTeam();
 

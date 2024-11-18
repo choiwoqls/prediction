@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkEmail(String email){
         try{
-            return userRepository.findByEmail(email).isEmpty();
+            return userRepository.existsByEmail(email);
         }catch (Exception e){
             throw new CustomException(e);
         }
@@ -102,7 +102,8 @@ public class UserServiceImpl implements UserService {
             user.setTeam(team);
             userRepository.save(user);
             MessageDto messageDto = new MessageDto();
-            messageDto.setMessage("회원가입 성공");
+            messageDto.setType("message");
+            messageDto.setData("회원가입 성공");
             return messageDto;
 
         } catch (BadRequestAlertException e) {

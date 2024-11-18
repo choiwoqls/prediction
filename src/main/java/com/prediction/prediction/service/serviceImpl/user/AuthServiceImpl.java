@@ -3,11 +3,13 @@ package com.prediction.prediction.service.serviceImpl.user;
 import com.prediction.prediction.domain.user.User;
 import com.prediction.prediction.dto.request.auth.CodeDTO;
 import com.prediction.prediction.dto.request.auth.LoginDTO;
+import com.prediction.prediction.dto.request.auth.rePasswordDTO;
 import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.exception.CustomException;
 import com.prediction.prediction.exception.IncorrectPasswordException;
 import com.prediction.prediction.exception.NotFoundException;
 import com.prediction.prediction.exception.UnauthorizedException;
+import com.prediction.prediction.repository.user.UserRepository;
 import com.prediction.prediction.security.JwtTokenProvider;
 import com.prediction.prediction.security.UserPrincipal;
 import com.prediction.prediction.service.user.AuthService;
@@ -30,6 +32,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private final UserService userService;
+
+    @Autowired
+    private final UserRepository userRepository;
 
     @Autowired
     private final RedisUtil redisUtil;
@@ -90,7 +95,8 @@ public class AuthServiceImpl implements AuthService {
 
             MessageDto message = new MessageDto();
             SecurityContextHolder.clearContext();
-            message.setMessage("Logout Success");
+            message.setType("message");
+            message.setData("Logout Success");
             return message;
         }catch (UnauthorizedException e){
             throw new UnauthorizedException(e.getMessage());
@@ -103,7 +109,8 @@ public class AuthServiceImpl implements AuthService {
             MessageDto message = new MessageDto();
             redisUtil.matchedToken(codeDto.getEmail(), codeDto.getCode());
             redisUtil.deleteToken(codeDto.getEmail());
-            message.setMessage("이메일 인증 성공.");
+            message.setType("message");
+            message.setData("이메일 인증 성공.");
             return message;
         }catch (UnauthorizedException e){
             throw new UnauthorizedException("일치하지 않는 코드.");
@@ -111,4 +118,27 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(e);
         }
     }
+
+    @Override
+    public MessageDto resetPassword(rePasswordDTO rePasswordDto) {
+        try {
+            MessageDto message = new MessageDto();
+            User user = userService.getUserByEmail(rePasswordDto.getEmail());
+            if(!rePasswordDto.getPassword().equals(rePasswordDto.getRePassword())){
+                throw new IncorrectPasswordException("일치하지 않는 비밀번호");
+            }
+            user.setPassword(HashUtil.hashPassword(rePasswordDto.getPassword()));
+            userRepository.save(user);
+            message.setType("message");
+            message.setData("비밀번호 변경 성공.");
+            return message;
+        }catch (IncorrectPasswordException e){
+            throw new IncorrectPasswordException(e.getMessage());
+        }catch (NotFoundException e){
+           throw new NotFoundException(e.getMessage());
+        }catch (Exception e){
+            throw new CustomException(e);
+        }
+    }
+
 }

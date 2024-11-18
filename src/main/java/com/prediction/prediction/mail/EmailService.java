@@ -1,8 +1,12 @@
 package com.prediction.prediction.mail;
 
+import com.prediction.prediction.dto.response.MessageDto;
+
 public interface EmailService {
 
-    String sendMailReject(String Email);
+    MessageDto sendMailAuth(String Email, boolean mode);
+
+
 
 
 }
