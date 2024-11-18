@@ -47,13 +47,13 @@ public class AuthController {
         return ApiResponse.success(message).toResponseEntity();
     }
 
-    @GetMapping("/check")
+    @GetMapping("/verify-email")
     @ResponseBody
     public ResponseEntity<ApiResponse<String>> check(@RequestBody @Valid EmailDTO emailDto) {
         return ApiResponse.success(eMailService.sendMailReject(emailDto.getEmail())).toResponseEntity();
     }
 
-    @GetMapping("/check-code")
+    @GetMapping("/verify-code")
     public ResponseEntity<ApiResponse<MessageDto>> checkCode(@RequestBody @Valid CodeDTO codeDto){
          return ApiResponse.success(authService.checkCode(codeDto)).toResponseEntity();
     }
