@@ -60,7 +60,7 @@ public class SecurityConfig {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     ServletOutputStream out = response.getOutputStream();
-                    new ObjectMapper().writeValue(out, new ApiResponse<String>("Invalid or missing auth token." +
+                    new ObjectMapper().writeValue(out, new ApiResponse<String>("만료되었거나, 유효하지않은 토큰." +
                             "", HttpStatus.UNAUTHORIZED));
                     out.flush();
                 };
@@ -73,7 +73,7 @@ public class SecurityConfig {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     ServletOutputStream out = response.getOutputStream();
-                    new ObjectMapper().writeValue(out, new ApiResponse<String>("You are not allowed to access this resource.", HttpStatus.FORBIDDEN));
+                    new ObjectMapper().writeValue(out, new ApiResponse<String>("권한이 없는 사용자.", HttpStatus.FORBIDDEN));
                     out.flush();
                 };
             }
@@ -100,6 +100,9 @@ public class SecurityConfig {
                                 .requestMatchers(AUTH_WHITELIST).permitAll()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
+                        .exceptionHandling(handling -> handling
+                        .accessDeniedHandler(accessDeniedHandler()) // AccessDeniedHandler 등록
+                        .authenticationEntryPoint(authenticationErrorHandler())) // AuthenticationEntryPoint 등록
                         .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                         .authenticationProvider(authenticationProvider())
                         .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
