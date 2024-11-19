@@ -5,7 +5,7 @@ import com.prediction.prediction.enumerations.UserRole;
 import com.prediction.prediction.exception.CustomException;
 import com.prediction.prediction.exception.ResourceNotFoundException;
 import com.prediction.prediction.repository.user.RoleRepository;
-import com.prediction.prediction.service.user.RoleService;
+import com.prediction.prediction.service.service.user.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

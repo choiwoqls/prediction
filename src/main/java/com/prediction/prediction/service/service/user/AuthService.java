@@ -1,4 +1,4 @@
-package com.prediction.prediction.service.user;
+package com.prediction.prediction.service.service.user;
 
 import com.prediction.prediction.dto.request.auth.CodeDTO;
 import com.prediction.prediction.dto.request.auth.LoginDTO;

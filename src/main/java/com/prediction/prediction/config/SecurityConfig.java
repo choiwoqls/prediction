@@ -60,8 +60,7 @@ public class SecurityConfig {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     ServletOutputStream out = response.getOutputStream();
-                    new ObjectMapper().writeValue(out, new ApiResponse<String>("만료되었거나, 유효하지않은 토큰." +
-                            "", HttpStatus.UNAUTHORIZED));
+                    new ObjectMapper().writeValue(out, new ApiResponse<String>("만료되었거나, 유효하지않은 토큰.", HttpStatus.UNAUTHORIZED));
                     out.flush();
                 };
             }

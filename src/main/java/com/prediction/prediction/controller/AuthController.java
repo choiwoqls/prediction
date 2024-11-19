@@ -7,8 +7,8 @@ import com.prediction.prediction.dto.request.auth.rePasswordDTO;
 import com.prediction.prediction.dto.request.user.UserDTO;
 import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.mail.EmailService;
-import com.prediction.prediction.service.user.AuthService;
-import com.prediction.prediction.service.user.UserService;
+import com.prediction.prediction.service.service.user.AuthService;
+import com.prediction.prediction.service.service.user.UserService;
 import com.prediction.prediction.util.ApiResponse;
 import com.prediction.prediction.util.JWTAuthenticationResponse;
 import jakarta.validation.Valid;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 

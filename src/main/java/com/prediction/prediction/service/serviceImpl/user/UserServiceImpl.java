@@ -6,8 +6,9 @@ import com.prediction.prediction.domain.player.Team;
 import com.prediction.prediction.domain.user.Role;
 import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.enumerations.UserRole;
-import com.prediction.prediction.service.player.TeamService;
-import com.prediction.prediction.service.user.RoleService;
+import com.prediction.prediction.service.service.player.TeamService;
+import com.prediction.prediction.service.service.user.Credit_GainService;
+import com.prediction.prediction.service.service.user.RoleService;
 import com.prediction.prediction.util.HashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import com.prediction.prediction.exception.BadRequestAlertException;
 import com.prediction.prediction.exception.CustomException;
 import com.prediction.prediction.exception.NotFoundException;
 import com.prediction.prediction.repository.user.UserRepository;
-import com.prediction.prediction.service.user.UserService;
+import com.prediction.prediction.service.service.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private Credit_GainService creditGainService;
 
     @Override
     public User getUserByEmail(String email) {
@@ -70,6 +74,8 @@ public class UserServiceImpl implements UserService {
     public MessageDto signUp(UserDTO userDto) {
 
         try {
+            //회원 가입 크레딧 5.
+            int credit = 5;
             System.out.println("one");
             User userEmail = userRepository.findByEmail(userDto.getEmail()).orElse(null);
             if (userEmail != null) {
@@ -94,32 +100,36 @@ public class UserServiceImpl implements UserService {
             roles.add(role);
             System.out.println("role :" + role.getName());
             user.setRoles(roles);
-            user.setCredit(5);
+            user.setCredit(credit);
             user.setDate(new Date());
             user.setMessage_op(0);
             user.setResult_op(0);
             Team team = teamService.getTeamById(userDto.getTeam_id());
             user.setTeam(team);
             userRepository.save(user);
+
+            creditGainService.presentCredit(user, 0, credit);
+
             MessageDto messageDto = new MessageDto();
             messageDto.setType("message");
             messageDto.setData("회원가입 성공");
             return messageDto;
 
         } catch (BadRequestAlertException e) {
-            System.out.println("11");
+            System.out.println("already using email or nickname");
             throw new BadRequestAlertException(e.getMessage());
         } catch (NotFoundException e) {
             System.out.println("22");
             throw new NotFoundException(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Present Credit");
+            throw new IllegalArgumentException(e.getMessage());
         } catch (Exception e) {
-            System.out.println("33");
+            System.out.println("Others");
             throw new CustomException(e);
         }
 
     }
-
-
 
     @Override
     public List<Object> info() {
