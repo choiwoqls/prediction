@@ -22,6 +22,7 @@ import com.prediction.prediction.repository.user.UserRepository;
 import com.prediction.prediction.service.service.user.UserService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -71,11 +72,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public MessageDto signUp(UserDTO userDto) {
-
+        //회원 가입 크레딧 5.
+        int credit = 5;
         try {
-            //회원 가입 크레딧 5.
-            int credit = 5;
             System.out.println("one");
             User userEmail = userRepository.findByEmail(userDto.getEmail()).orElse(null);
             if (userEmail != null) {
