@@ -1,6 +1,7 @@
 package com.prediction.prediction.util;
 
 import com.prediction.prediction.exception.BadRequestAlertException;
+import com.prediction.prediction.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -21,6 +22,9 @@ public class MailUtil {
             javaMailSender.send(simpleMailMessage);
         }catch (BadRequestAlertException e){
             throw new BadRequestAlertException(e.getMessage());
+        }catch (Exception e){
+            System.out.println("Exception - MailUtil : sendMailReject");
+            throw new CustomException(e);
         }
 
     }

@@ -57,7 +57,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }else{
             String path = request.getRequestURI();
             boolean whitelist = Arrays.stream(AUTH_WHITELIST).anyMatch(path::contains);
-
             //whitelist 체크
             if (!whitelist) {
                 //JWT 토큰 인증
@@ -68,6 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     if (jwtTokenProvider.validateToken(jwt)) {
                         //ContextHolder에 객체 저장. (성공)
                         String userEmail = jwtTokenProvider.getUserEmailFromToken(jwt);
+
                         //redis 토큰 일치 확인. 일치하지 않으면 예외 던짐.
                         redisUtil.matchedToken(userEmail, jwt);
                         UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);

@@ -74,6 +74,19 @@ public class JwtTokenProvider{
         }
     }
 
+    public String getClaimFromToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                     .verifyWith(JwtUtil.getKeyFromSecret(jwtSecret))
+                     .build()
+                     .parseSignedClaims(token).getPayload();
+            return claims.get("roles").toString();
+        }catch (Exception e){
+            System.out.println(e.getClass());
+            throw new CustomException(e);
+        }
+    }
+
 
     public boolean validateToken(String authToken) {
         try {
