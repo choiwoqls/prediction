@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
-    @Query("SELECT u FROM User u JOIN u.team t")
+    @Query("select u from user u join credit_gain g where ")
     List<Object> findAllUserAndTeam();
 
 }

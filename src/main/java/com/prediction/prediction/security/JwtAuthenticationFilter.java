@@ -78,14 +78,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     }
                 }catch (UnauthorizedException e){
-                    System.out.println("this");
+                    System.out.println("JwtAuthenticationFilter : doFilterInternal : UnauthorizedException");
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json"); // 응답 타입 설정
 
                     ObjectMapper objectMapper = new ObjectMapper();
                     String json = objectMapper
                             .writeValueAsString(ApiResponse.error(e.getMessage(),HttpStatus.UNAUTHORIZED)
-                                    .toResponseEntity());
+                                    .toResponseEntity().getBody());
                     response.getWriter().write(json);
                     return;
                 } catch (Exception e) {
