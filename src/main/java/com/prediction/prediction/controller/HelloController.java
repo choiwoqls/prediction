@@ -20,6 +20,7 @@ public class HelloController {
 
     @GetMapping("/hello")
     public ResponseEntity<ApiResponse<List<Object>>> hello() {
+        System.out.println("????????????????asd");
         List<Object> list = userService.info();
         System.out.println(list);
         return ApiResponse.success(list).toResponseEntity();

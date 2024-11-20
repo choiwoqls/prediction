@@ -27,5 +27,14 @@ public class TeamServiceImpl implements TeamService {
         }
     }
 
+    @Override
+    public boolean checkTeam(int team_id) {
+        try {
+            return teamRepository.existsById(team_id);
+        }catch (Exception e){
+            throw new CustomException(e);
+        }
+    }
+
 
 }

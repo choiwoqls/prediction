@@ -5,5 +5,6 @@ import com.prediction.prediction.domain.player.Team;
 public interface TeamService {
 
     Team getTeamById(int team_id);
+    boolean checkTeam(int team_id);
 
 }

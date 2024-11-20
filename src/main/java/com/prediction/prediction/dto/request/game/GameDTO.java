@@ -1,6 +1,8 @@
 package com.prediction.prediction.dto.request.game;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.prediction.prediction.domain.game.Game;
+import com.prediction.prediction.validator.MinDaysFromToday;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +19,7 @@ public class GameDTO {
     @NotNull(message = "Home Team ID를 입력하시오.")
     private Integer home_id;
 
-    @NotNull(message = "away Team ID를 입력하시오.")
+    @NotNull(message = "Away Team ID를 입력하시오.")
     private Integer away_id;
 
     private int status;
@@ -25,6 +27,8 @@ public class GameDTO {
     private int result;
 
     @NotNull(message = "경기 날짜를 입력해주세요.")
+    //@MinDaysFromToday(days = 3, message = "3일 뒤 경기부터 입력할 수 있습니다.")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date date;
 
     public GameDTO(Game game){

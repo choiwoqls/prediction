@@ -101,7 +101,8 @@ public class SecurityConfig {
                                 .anyRequest().authenticated())
                         .exceptionHandling(handling -> handling
                         .accessDeniedHandler(accessDeniedHandler()) // AccessDeniedHandler 등록
-                        .authenticationEntryPoint(authenticationErrorHandler())) // AuthenticationEntryPoint 등록
+                        //.authenticationEntryPoint(authenticationErrorHandler())
+                        ) // AuthenticationEntryPoint 등록
                         .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                         .authenticationProvider(authenticationProvider())
                         .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
