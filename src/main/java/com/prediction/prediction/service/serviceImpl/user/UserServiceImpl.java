@@ -3,13 +3,18 @@ package com.prediction.prediction.service.serviceImpl.user;
 import java.util.*;
 
 import com.prediction.prediction.domain.player.Team;
+import com.prediction.prediction.domain.user.Credit_Gain;
 import com.prediction.prediction.domain.user.Role;
 import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.enumerations.UserRole;
+import com.prediction.prediction.exception.UnauthorizedException;
+import com.prediction.prediction.security.JwtTokenProvider;
 import com.prediction.prediction.service.service.player.TeamService;
 import com.prediction.prediction.service.service.user.Credit_GainService;
 import com.prediction.prediction.service.service.user.RoleService;
 import com.prediction.prediction.util.HashUtil;
+import com.prediction.prediction.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +44,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private Credit_GainService creditGainService;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Override
     public User getUserByEmail(String email) {
@@ -133,8 +141,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Object> info() {
-        return userRepository.findAllUserAndTeam();
+    public Credit_Gain info(HttpServletRequest request) {
+        System.out.println("info");
+        try{
+            String jwt = JwtUtil.getJwtFromRequest(request);
+            String email = jwtTokenProvider.getUserEmailFromToken(jwt);
+            User id = userRepository.findByEmail(email).orElse(null);
+            if(id == null){
+                throw new NotFoundException("찾을 수 없는 사용자 ID");
+            }
+            System.out.println("id : " + id.getId());
+            return creditGainService.info(id.getId());
+        }catch (UnauthorizedException e){
+            throw new UnauthorizedException(e.getMessage());
+        }catch (NotFoundException e){
+            throw new NotFoundException(e.getMessage());
+        }catch (Exception e){
+            throw new CustomException(e);
+        }
+
     }
 
 

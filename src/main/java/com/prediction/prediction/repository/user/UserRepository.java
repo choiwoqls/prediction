@@ -7,12 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
-    Optional<User> findById(Long id);
 
     Optional<User> findByEmail(String email);
 
@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
-    @Query("select u from user u join credit_gain g where ")
-    List<Object> findAllUserAndTeam();
+    @Query(value = "SELECT * FROM user   WHERE id = :id", nativeQuery = true)
+    User findAllUserAndTeam(Long id);
 
 }
