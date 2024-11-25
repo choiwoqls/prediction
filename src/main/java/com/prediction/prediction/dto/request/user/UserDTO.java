@@ -1,5 +1,7 @@
 package com.prediction.prediction.dto.request.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.prediction.prediction.domain.player.Team;
 import com.prediction.prediction.domain.user.User;
 import jakarta.validation.constraints.NotBlank;
@@ -28,13 +30,16 @@ public class UserDTO {
     @NotBlank(message = "닉네임은 필수 입력 정보 입니다.")
     private String nickname;
 
+    @JsonIgnore
     @NotBlank(message = "8자 이상 알파벳, 숫자, 특수문자를 포함한 비밀번호를 입력해주세요.")
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$", message = "8자 이상 알파벳, 숫자, 특수문자를 포함한 비밀번호를 입력해주세요.")
     private String password;
 
-
     private int credit;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date date;
+
     private int message_op;
     private int result_op;
 
