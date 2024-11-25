@@ -5,6 +5,7 @@ import java.util.*;
 import com.prediction.prediction.domain.player.Team;
 import com.prediction.prediction.domain.user.Credit_Gain;
 import com.prediction.prediction.domain.user.Role;
+import com.prediction.prediction.dto.request.user.Credit_GainDTO;
 import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.enumerations.UserRole;
 import com.prediction.prediction.exception.UnauthorizedException;
@@ -60,15 +61,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(Long id) {
+    public UserDTO getUserById(Long id) {
         try {
-           return userRepository.findById(id).orElseThrow(() -> new NotFoundException("찾을 수 없는 유저 ID"));
+            User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("찾을 수 없는 유저 ID"));
+           return new UserDTO(user);
        }catch (NotFoundException e){
            throw new NotFoundException(e.getMessage());
        }catch (Exception e){
             throw new CustomException(e);
         }
     }
+
+    @Override
+    public UserDTO getUserByToken(HttpServletRequest request) {
+         try{
+         String jwt = JwtUtil.getJwtFromRequest(request);
+            String email = jwtTokenProvider.getUserEmailFromToken(jwt);
+            User user = userRepository.findByEmail(email).orElse(null);
+            if(user == null){
+                throw new NotFoundException("찾을 수 없는 사용자 ID");
+            }
+            return new UserDTO(user);
+        }catch (UnauthorizedException e){
+            throw new UnauthorizedException(e.getMessage());
+        }catch (NotFoundException e){
+            throw new NotFoundException(e.getMessage());
+        }catch (Exception e){
+            throw new CustomException(e);
+        }
+    }
+
 
     @Override
     public boolean checkEmail(String email){
@@ -141,17 +163,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Credit_Gain info(HttpServletRequest request) {
+    public List<Credit_GainDTO> info(HttpServletRequest request) {
         System.out.println("info");
         try{
-            String jwt = JwtUtil.getJwtFromRequest(request);
-            String email = jwtTokenProvider.getUserEmailFromToken(jwt);
-            User id = userRepository.findByEmail(email).orElse(null);
-            if(id == null){
-                throw new NotFoundException("찾을 수 없는 사용자 ID");
-            }
-            System.out.println("id : " + id.getId());
-            return creditGainService.info(id.getId());
+            UserDTO userDto = this.getUserByToken(request);
+            System.out.println("user : " + userDto.getId());
+            return creditGainService.info(userDto.getId());
         }catch (UnauthorizedException e){
             throw new UnauthorizedException(e.getMessage());
         }catch (NotFoundException e){
@@ -159,8 +176,24 @@ public class UserServiceImpl implements UserService {
         }catch (Exception e){
             throw new CustomException(e);
         }
-
     }
+
+
+    @Transactional
+    @Override
+    public boolean addCredit(List<User> success_list) {
+        int credit =10;
+        try {
+            for(User user : success_list){
+                userRepository.addCredit(credit, user.getId());
+                creditGainService.presentCredit(user, 2,credit);
+            }
+            return true;
+        }catch (Exception e) {
+            throw new CustomException(e);
+        }
+    }
+
 
 
 }
