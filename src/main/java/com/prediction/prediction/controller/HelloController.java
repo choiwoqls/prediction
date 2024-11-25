@@ -2,6 +2,7 @@ package com.prediction.prediction.controller;
 
 import com.prediction.prediction.domain.user.Credit_Gain;
 import com.prediction.prediction.domain.user.User;
+import com.prediction.prediction.dto.request.user.Credit_GainDTO;
 import com.prediction.prediction.service.service.user.Credit_GainService;
 import com.prediction.prediction.service.service.user.UserService;
 import com.prediction.prediction.util.ApiResponse;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,10 +29,11 @@ public class HelloController {
 
     //test
     @GetMapping("/hello")
-    public ResponseEntity<ApiResponse<Credit_Gain>> hello(HttpServletRequest request) {
-        System.out.println("hello");
-        Credit_Gain list = userService.info(request);
-        return ApiResponse.success(list).toResponseEntity();
+    public ResponseEntity<ApiResponse<Map<String, Object>>> hello(HttpServletRequest request) {
+        Map<String, Object> info = new HashMap<>();
+        info.put("credit_gain", userService.info(request));
+        info.put("user", userService.getUserByToken(request));
+        return ApiResponse.success(info).toResponseEntity();
     }
 
 
