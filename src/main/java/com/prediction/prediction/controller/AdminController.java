@@ -1,6 +1,7 @@
 package com.prediction.prediction.controller;
 
 import com.prediction.prediction.dto.request.game.GameDTO;
+import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.service.service.game.GameService;
 import com.prediction.prediction.util.ApiResponse;
 import jakarta.validation.Valid;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,14 +30,21 @@ public class AdminController {
 
     @PostMapping("/game")
     public ResponseEntity<ApiResponse<GameDTO>> createGame(@RequestBody @Valid GameDTO gameDto){
-        GameDTO newGame = gameService.createGame(gameDto);
+        GameDTO newGame = gameService.saveGame(gameDto);
         return new ApiResponse<>(newGame).toResponseEntity();
     }
 
     @PutMapping("/game")
-    public ResponseEntity<ApiResponse<String>> updateGame(@RequestBody @Valid GameDTO gameDto){
-
-
-        return new ApiResponse<>("Update Game").toResponseEntity();
+    public ResponseEntity<ApiResponse<GameDTO>> updateGame(@RequestBody @Valid GameDTO gameDto){
+        GameDTO newGame = gameService.saveGame(gameDto);
+        return new ApiResponse<>(newGame).toResponseEntity();
     }
+
+    @PutMapping("/game/result")
+    public ResponseEntity<ApiResponse<MessageDto>> resultGame(@RequestParam int result, @RequestParam Long game_id){
+        //todo result: Valid 0 <= result <= 4 , Game: isExisted game Valid
+        MessageDto message = gameService.resultGame(result, game_id);
+        return new ApiResponse<>(message).toResponseEntity();
+    }
+
 }
