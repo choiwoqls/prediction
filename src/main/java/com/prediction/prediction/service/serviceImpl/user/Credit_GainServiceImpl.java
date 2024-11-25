@@ -2,21 +2,19 @@ package com.prediction.prediction.service.serviceImpl.user;
 
 import com.prediction.prediction.domain.user.Credit_Gain;
 import com.prediction.prediction.domain.user.User;
-import com.prediction.prediction.dto.response.MessageDto;
+import com.prediction.prediction.dto.request.user.Credit_GainDTO;
 import com.prediction.prediction.exception.CustomException;
-import com.prediction.prediction.exception.NotFoundException;
 import com.prediction.prediction.exception.UnauthorizedException;
 import com.prediction.prediction.repository.user.Credit_GainRepository;
-import com.prediction.prediction.security.JwtTokenProvider;
 import com.prediction.prediction.service.service.user.Credit_GainService;
-import com.prediction.prediction.service.service.user.UserService;
-import com.prediction.prediction.util.JwtUtil;
-import jakarta.servlet.http.HttpServletRequest;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +23,7 @@ public class Credit_GainServiceImpl implements Credit_GainService {
     @Autowired
     private final Credit_GainRepository credit_gainRepository;
 
+    @Transactional
     @Override
     public void presentCredit(User user, int type, int credit) {
         try {
@@ -41,8 +40,9 @@ public class Credit_GainServiceImpl implements Credit_GainService {
         }
     }
 
+    @Transactional
     @Override
-    public Credit_Gain info(Long id) {
+    public List<Credit_GainDTO> info(Long id) {
         try{
             return credit_gainRepository.findAllUserAndTeam(id);
         }catch (UnauthorizedException e){
