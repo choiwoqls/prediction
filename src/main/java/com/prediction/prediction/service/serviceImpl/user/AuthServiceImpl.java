@@ -4,6 +4,7 @@ import com.prediction.prediction.domain.user.User;
 import com.prediction.prediction.dto.request.auth.CodeDTO;
 import com.prediction.prediction.dto.request.auth.LoginDTO;
 import com.prediction.prediction.dto.request.auth.rePasswordDTO;
+import com.prediction.prediction.dto.request.user.UserDTO;
 import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.exception.CustomException;
 import com.prediction.prediction.exception.IncorrectPasswordException;
@@ -59,7 +60,7 @@ public class AuthServiceImpl implements AuthService {
             }
             String jwt = null;
             UserPrincipal userPrincipal = null;
-            User user = null;
+            UserDTO userDto = null;
 
             UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
             System.out.println(authRequest);
@@ -72,8 +73,8 @@ public class AuthServiceImpl implements AuthService {
             System.out.println("Auth Login");
             jwt = jwtTokenProvider.generateToken(authentication);
             userPrincipal = UserUtils.getLoggedInUser();
-            user = userService.getUserById(userPrincipal.getId());
-            redisUtil.saveToken(String.valueOf(user.getEmail()), jwt, 60);
+            userDto = userService.getUserById(userPrincipal.getId());
+            redisUtil.saveToken(String.valueOf(userDto.getEmail()), jwt, 60);
             return new JWTAuthenticationResponse(jwt);
         }catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
