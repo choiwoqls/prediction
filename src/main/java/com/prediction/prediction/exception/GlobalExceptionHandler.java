@@ -8,10 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.prediction.prediction.util.ApiResponse;
@@ -46,7 +48,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestAlertException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> badRequestAlert(BadRequestAlertException ex, Locale locale) {
-        System.out.println("badRequestAlert");
 //        String errorMessage = messageSource.getMessage(ex.getMessage(), ex.getArgs(), locale);
         String errorMessage = ex.getMessage();
         return new ApiResponse<>(errorMessage, HttpStatus.BAD_REQUEST).toResponseEntity();
@@ -63,6 +64,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> methodArgumentNotValid(MethodArgumentNotValidException ex, Locale locale){
+        System.out.println("???????");
             String firstErrorMessage =  ex.getBindingResult().getFieldErrors()
             .stream()
             .sorted((e1, e2) -> e1.getField().compareTo(e2.getField())) // 필드 이름 기준으로 정렬
@@ -111,6 +113,13 @@ public class GlobalExceptionHandler {
         String errorMessage = ex.getMessage();
         return new ApiResponse<>(errorMessage, HttpStatus.UNAUTHORIZED).toResponseEntity();
     }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<?> MethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex){
+        String errorMessage = "parameter is missing";
+        return new ApiResponse<>(errorMessage, HttpStatus.BAD_REQUEST).toResponseEntity();
+    }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> globalExceptionHandler(Exception ex, Locale locale) throws JsonProcessingException {
