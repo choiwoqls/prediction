@@ -1,10 +1,11 @@
 package com.prediction.prediction.controller;
 
+import com.prediction.prediction.dto.request.SignUpDTO;
 import com.prediction.prediction.dto.request.auth.CodeDTO;
 import com.prediction.prediction.dto.request.auth.EmailDTO;
 import com.prediction.prediction.dto.request.auth.LoginDTO;
 import com.prediction.prediction.dto.request.auth.rePasswordDTO;
-import com.prediction.prediction.dto.request.user.UserDTO;
+import com.prediction.prediction.dto.response.user.UserDTO;
 import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.mail.EmailService;
 import com.prediction.prediction.service.service.user.AuthService;
@@ -44,8 +45,8 @@ public class AuthController {
      }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<ApiResponse<MessageDto>> signUp(@RequestBody @Valid UserDTO userDto) {
-        MessageDto message = userService.signUp(userDto);
+    public ResponseEntity<ApiResponse<MessageDto>> signUp(@RequestBody @Valid SignUpDTO signUpDto) {
+        MessageDto message = userService.signUp(signUpDto);
         return ApiResponse.success(message).toResponseEntity();
     }
 
@@ -69,6 +70,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<MessageDto>> verifyPassword(@RequestBody @Valid EmailDTO emailDto) {
         return ApiResponse.success(eMailService.sendMailAuth(emailDto.getEmail(), false)).toResponseEntity();
     }
+
 
     @PutMapping("/reset-password")
     public ResponseEntity<ApiResponse<MessageDto>>resetPassword(@RequestBody @Valid rePasswordDTO rePasswordDto){
