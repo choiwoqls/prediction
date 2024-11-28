@@ -37,9 +37,7 @@ public class Game_PlayServiceImpl implements Game_PlayService {
     @Override
     public List<User> successList(Long game_id) {
         try {
-            Game game = new Game();
-            game.setId(game_id);
-            return gamePlayRepository.successList(game);
+            return gamePlayRepository.successList(game_id);
         }catch (Exception e){
             throw new CustomException(e);
         }
@@ -49,9 +47,7 @@ public class Game_PlayServiceImpl implements Game_PlayService {
     @Override
     public List<User> userList(Long game_id) {
         try {
-            Game game = new Game();
-            game.setId(game_id);
-            return gamePlayRepository.userList(game);
+            return gamePlayRepository.userList(game_id);
         }catch (Exception e){
             throw new CustomException(e);
         }
@@ -61,6 +57,8 @@ public class Game_PlayServiceImpl implements Game_PlayService {
     @Override
     public void deleteExpect(Long game_id) {
         try {
+            Game game = new Game();
+            game.setId(game_id);
             gamePlayRepository.deleteByGameId(game_id);
         }catch (Exception e){
             throw new CustomException(e);

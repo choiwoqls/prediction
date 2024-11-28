@@ -19,14 +19,14 @@ public interface Game_PlayRepository extends JpaRepository<Game_Play, Long> {
     @Query(value = "UPDATE Game_Play SET result = 2 WHERE expect != :result AND game_id = :game_id", nativeQuery = true)
     int failedExpect(int result, Long game_id);
 
-    @Query(value = "SELECT g.user FROM Game_Play g WHERE g.result = 1 and g.game = :game_id")
-    List<User> successList(Game game_id);
+    @Query(value = "SELECT g.user FROM Game_Play g WHERE g.result = 1 and g.game.id = :game_id")
+    List<User> successList(Long game_id);
 
-    @Query(value = "SELECT g.user FROM Game_Play g  WHERE g.user.result_op = 0 AND g.game = :game_id")
-    List<User> userList(Game game_id);
+    @Query(value = "SELECT g.user FROM Game_Play g  WHERE g.user.result_op = 0 AND g.game.id = :game_id")
+    List<User> userList(Long game_id);
 
     @Modifying
-    @Query(value = "DELETE FROM Game_Play WHERE game = :game_id", nativeQuery = true)
+    @Query(value = "DELETE FROM Game_Play WHERE game.id = :game_id")
     void deleteByGameId(Long game_id);
 
 
