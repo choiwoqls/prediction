@@ -14,6 +14,7 @@ import com.prediction.prediction.service.service.player.TeamService;
 import com.prediction.prediction.service.service.user.MessageService;
 import com.prediction.prediction.service.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,7 @@ public class GameServiceImpl implements GameService {
     @Autowired
     private final UserService userService;
 
+    //경기 생성, 수정
     @Override
     public GameDTO saveGame(GameDTO gameDto) {
         try{
@@ -75,25 +77,22 @@ public class GameServiceImpl implements GameService {
         }
     }
 
+    //경기 결과 반영
     @Transactional
     @Override
     public MessageDto resultGame(int result, Long game_id) {
         MessageDto message = new MessageDto();
         message.setType("message");
         try{
-            if(result == 4){
-                //경기 취소일 경우
-                //todo 경기 취소 시 코드 추가.
-                gamePlayService.deleteExpect(game_id);
-                message.setData("경기 취소.");
-                return message;
-            }
             Game game = gameRepository.findById(game_id).orElse(null);
             if(game == null){
-                throw new NotFoundException("찾을 수 없는 경기 : 2");
+                throw new NotFoundException("찾을 수 없는 경기");
             }
-            if(gameRepository.resultGame(result, game_id) == 0){
-                throw new NotFoundException("경기 결과 반영 실패 : 1");
+            if(game.getStatus() >= 3){
+                throw new BadRequestAlertException("중복된 결과 반영.");
+            }
+            if(gameRepository.resultGame(result,3, game_id) == 0){
+                throw new NotFoundException("경기 결과 반영 실패");
             }
             //경기 결과 팀 성적에 반영
             teamService.updateResult(result, game);
@@ -104,16 +103,50 @@ public class GameServiceImpl implements GameService {
             messageService.sendMessage(user_list, 1,"승부예측 결과를 확인해 주세요.");
             //예측 성공한 USER LIST -> +10 Credit
             List<User> success_list = gamePlayService.successList(game_id);
-            userService.addCredit(success_list);
+            userService.addCredit(success_list,2, 10);
 
             message.setData("경기 결과 반영 성공");
-
-        }catch (RuntimeException e){
-            throw new BadRequestAlertException("게임 결과 반영 실패");
+        }catch (NotFoundException e){
+            throw new NotFoundException(e.getMessage());
+        }catch(BadRequestAlertException e){
+            throw new BadRequestAlertException(e.getMessage());
         }catch(Exception e){
             throw new CustomException(e);
         }
         return message;
     }
 
+    //경기 취소
+    @Transactional
+    @Override
+    public MessageDto cancelGame(Long game_id) {
+        try {
+            Game game = gameRepository.findById(game_id).orElse(null);
+            if(game == null){
+                throw new NotFoundException("찾을 수 없는 경기");
+            }
+            if(game.getStatus() >= 3){
+                throw new BadRequestAlertException("중복된 결과 반영.");
+            }
+            if(gameRepository.resultGame(4, 4, game_id) == 0){
+                throw new NotFoundException("경기 취소 실패");
+            }
+            List<User> user_list = gamePlayService.userList(game_id);
+
+            userService.addCredit(user_list,3, -3);
+
+            messageService.sendMessage(user_list, 1,"예측 참여한 경기가 취소 되었습니다.");
+
+            gamePlayService.deleteExpect(game_id);
+
+            MessageDto message = new MessageDto();
+            message.setType("message");
+            message.setData("경기 취소.");
+            return message;
+        }catch (NotFoundException e){
+            throw new NotFoundException(e.getMessage());
+        }catch (Exception e){
+            throw new CustomException(e);
+        }
+    }
 }
