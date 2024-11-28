@@ -7,4 +7,5 @@ import com.prediction.prediction.dto.response.MessageDto;
 public interface GameService {
     GameDTO saveGame(GameDTO gameDto);
     MessageDto resultGame(int result, Long game_id);
+    MessageDto cancelGame(Long game_id);
 }

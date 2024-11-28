@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface GameRepository extends JpaRepository<Game, Long> {
 
     @Modifying
-    @Query(value = "UPDATE Game SET result = :result , status = 3 WHERE id = :game", nativeQuery = true)
-    int resultGame(int result, Long game);
+    @Query(value = "UPDATE Game SET result = :result , status = :status WHERE id = :game", nativeQuery = true)
+    int resultGame(int result,int status, Long game);
 
 
 
