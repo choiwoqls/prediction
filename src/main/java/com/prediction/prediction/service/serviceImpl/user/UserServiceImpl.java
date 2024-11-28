@@ -3,9 +3,9 @@ package com.prediction.prediction.service.serviceImpl.user;
 import java.util.*;
 
 import com.prediction.prediction.domain.player.Team;
-import com.prediction.prediction.domain.user.Credit_Gain;
 import com.prediction.prediction.domain.user.Role;
-import com.prediction.prediction.dto.request.user.Credit_GainDTO;
+import com.prediction.prediction.dto.request.SignUpDTO;
+import com.prediction.prediction.dto.response.user.Credit_GainDTO;
 import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.enumerations.UserRole;
 import com.prediction.prediction.exception.UnauthorizedException;
@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.prediction.prediction.domain.user.User;
-import com.prediction.prediction.dto.request.user.UserDTO;
+import com.prediction.prediction.dto.response.user.UserDTO;
 import com.prediction.prediction.exception.BadRequestAlertException;
 import com.prediction.prediction.exception.CustomException;
 import com.prediction.prediction.exception.NotFoundException;
@@ -103,18 +103,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public MessageDto signUp(UserDTO userDto) {
+    public MessageDto signUp(SignUpDTO signUpDto) {
         //회원 가입 크레딧 5.
         int credit = 5;
         try {
             System.out.println("one");
-            User userEmail = userRepository.findByEmail(userDto.getEmail()).orElse(null);
+            User userEmail = userRepository.findByEmail(signUpDto.getEmail()).orElse(null);
             if (userEmail != null) {
                 // 이메일 중복 예외 처리
                 throw new BadRequestAlertException("이미 사용중인 이메일");
             }
             System.out.println("two");
-            User userNickname = userRepository.findByNickname(userDto.getNickname()).orElse(null);
+            User userNickname = userRepository.findByNickname(signUpDto.getNickname()).orElse(null);
             if (userNickname != null) {
                 // 닉네임 중복 예외 처리
                 throw new BadRequestAlertException("이미 사용중인 닉네임");
@@ -122,24 +122,24 @@ public class UserServiceImpl implements UserService {
             System.out.println("three");
             // 회원가입 처리
             User user = new User();
-            user.setEmail(userDto.getEmail());
-            user.setNickname(userDto.getNickname());
-            user.setPassword(HashUtil.hashPassword(userDto.getPassword()));
+            user.setEmail(signUpDto.getEmail());
+            user.setNickname(signUpDto.getNickname());
+            user.setPassword(HashUtil.hashPassword(signUpDto.getPassword()));
             //role 설정 ..
             Role role = roleService.findByName(UserRole.USER);
             HashSet<Role> roles = new HashSet<>();
             roles.add(role);
             System.out.println("role :" + role.getName());
             user.setRoles(roles);
-            user.setCredit(credit);
+            user.setCredit(0);
             user.setDate(new Date());
             user.setMessage_op(0);
             user.setResult_op(0);
-            Team team = teamService.getTeamById(userDto.getTeam_id());
+            Team team = teamService.getTeamById(signUpDto.getTeam_id());
             user.setTeam(team);
             userRepository.save(user);
 
-            creditGainService.presentCredit(user, 0, credit);
+            this.addCredit(user, 0, credit);
 
             MessageDto messageDto = new MessageDto();
             messageDto.setType("message");
@@ -178,17 +178,25 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional
+    @Override
+    public void addCredit(User user, int type, int credit) {
+        try {
+            userRepository.addCredit(credit, user.getId());
+            creditGainService.presentCredit(user, type, credit);
+        }catch (Exception e) {
+            throw new CustomException(e);
+        }
+    }
 
     @Transactional
     @Override
-    public boolean addCredit(List<User> success_list) {
-        int credit =10;
+    public void addCredit(List<User> user_list, int type, int credit) {
         try {
-            for(User user : success_list){
+            for(User user : user_list){
                 userRepository.addCredit(credit, user.getId());
-                creditGainService.presentCredit(user, 2,credit);
+                creditGainService.presentCredit(user, type, credit);
             }
-            return true;
         }catch (Exception e) {
             throw new CustomException(e);
         }

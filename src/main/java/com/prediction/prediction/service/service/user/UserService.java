@@ -1,20 +1,19 @@
 package com.prediction.prediction.service.service.user;
 
-import com.prediction.prediction.domain.user.Credit_Gain;
 import com.prediction.prediction.domain.user.User;
-import com.prediction.prediction.dto.request.user.Credit_GainDTO;
-import com.prediction.prediction.dto.request.user.UserDTO;
+import com.prediction.prediction.dto.request.SignUpDTO;
+import com.prediction.prediction.dto.response.user.Credit_GainDTO;
+import com.prediction.prediction.dto.response.user.UserDTO;
 import com.prediction.prediction.dto.response.MessageDto;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
-import java.util.Map;
 
 
 public interface UserService {
 
     //todo response dto USER
-    MessageDto signUp(UserDTO userDto);
+    MessageDto signUp(SignUpDTO signUpDto);
 
     User getUserByEmail(String email);
 
@@ -26,6 +25,8 @@ public interface UserService {
 
     List<Credit_GainDTO> info(HttpServletRequest request);
 
-    boolean addCredit(List<User> success_list);
+    void addCredit(User user, int type, int credit);
+
+    void addCredit(List<User> success_list, int type, int credit);
 
 }
