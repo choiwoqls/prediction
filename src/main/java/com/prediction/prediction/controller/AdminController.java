@@ -2,6 +2,7 @@ package com.prediction.prediction.controller;
 
 import com.prediction.prediction.dto.request.game.GameDTO;
 import com.prediction.prediction.dto.response.MessageDto;
+import com.prediction.prediction.exception.BadRequestAlertException;
 import com.prediction.prediction.service.service.game.GameService;
 import com.prediction.prediction.util.ApiResponse;
 import jakarta.validation.Valid;
@@ -43,7 +44,16 @@ public class AdminController {
     @PutMapping("/game/result")
     public ResponseEntity<ApiResponse<MessageDto>> resultGame(@RequestParam int result, @RequestParam Long game_id){
         //todo result: Valid 0 <= result <= 4 , Game: isExisted game Valid
+        if(result < 1 || result > 3){
+            throw new BadRequestAlertException("잘못된 result 입력");
+        }
         MessageDto message = gameService.resultGame(result, game_id);
+        return new ApiResponse<>(message).toResponseEntity();
+    }
+
+    @PutMapping("/game/cancel")
+    public ResponseEntity<ApiResponse<MessageDto>> cancelGame(@RequestParam Long game_id){
+        MessageDto message = gameService.cancelGame(game_id);
         return new ApiResponse<>(message).toResponseEntity();
     }
 
