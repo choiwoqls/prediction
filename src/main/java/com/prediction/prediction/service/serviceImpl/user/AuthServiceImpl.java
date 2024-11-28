@@ -4,7 +4,7 @@ import com.prediction.prediction.domain.user.User;
 import com.prediction.prediction.dto.request.auth.CodeDTO;
 import com.prediction.prediction.dto.request.auth.LoginDTO;
 import com.prediction.prediction.dto.request.auth.rePasswordDTO;
-import com.prediction.prediction.dto.request.user.UserDTO;
+import com.prediction.prediction.dto.response.user.UserDTO;
 import com.prediction.prediction.dto.response.MessageDto;
 import com.prediction.prediction.exception.CustomException;
 import com.prediction.prediction.exception.IncorrectPasswordException;

@@ -1,4 +1,4 @@
-package com.prediction.prediction.dto.request.user;
+package com.prediction.prediction.dto.response.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
