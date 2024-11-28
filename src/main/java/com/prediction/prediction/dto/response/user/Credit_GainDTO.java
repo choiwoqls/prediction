@@ -1,4 +1,4 @@
-package com.prediction.prediction.dto.request.user;
+package com.prediction.prediction.dto.response.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

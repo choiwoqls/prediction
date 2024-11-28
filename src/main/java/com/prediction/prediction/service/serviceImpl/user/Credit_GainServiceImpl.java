@@ -2,7 +2,7 @@ package com.prediction.prediction.service.serviceImpl.user;
 
 import com.prediction.prediction.domain.user.Credit_Gain;
 import com.prediction.prediction.domain.user.User;
-import com.prediction.prediction.dto.request.user.Credit_GainDTO;
+import com.prediction.prediction.dto.response.user.Credit_GainDTO;
 import com.prediction.prediction.exception.CustomException;
 import com.prediction.prediction.exception.UnauthorizedException;
 import com.prediction.prediction.repository.user.Credit_GainRepository;
