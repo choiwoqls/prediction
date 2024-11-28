@@ -1,8 +1,7 @@
-package com.prediction.prediction.dto.request.user;
+package com.prediction.prediction.dto.response.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.prediction.prediction.domain.player.Team;
 import com.prediction.prediction.domain.user.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
